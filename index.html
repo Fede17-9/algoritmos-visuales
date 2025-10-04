@@ -3,67 +3,368 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Algoritmos Visuales</title>
+  <title>Algoritmos Visuales — Estructuras de Datos</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <main class="container">
-    <h1>Algoritmos Visuales</h1>
-    <p class="muted">Pila, Cola y Ordenamientos con animación.</p>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
 
-    <section class="panel">
-      <h2>Pila</h2>
-      <div class="row">
-        <input id="stkVal" placeholder="valor" />
-        <button id="stkPush">push</button>
-        <button id="stkPop">pop</button>
-        <span class="pill" id="stackView">[]</span>
+  <div class="container">
+    <header>
+      <h1>Algoritmos Visuales</h1>
+      <p class="subtitle">Visualización interactiva de estructuras de datos y algoritmos de ordenamiento</p>
+    </header>
+
+    <div class="grid">
+       Stack Panel 
+      <div class="panel">
+        <h2>Pila (Stack)</h2>
+        <div class="controls">
+          <input type="text" id="stackInput" placeholder="Ingresa un valor">
+          <button onclick="stackPush()">Push</button>
+          <button class="secondary" onclick="stackPop()">Pop</button>
+        </div>
+        <div class="structure-view" id="stackView">
+          <span class="structure-empty">La pila está vacía</span>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Tamaño</span>
+            <span class="stat-value" id="stackSize">0</span>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="panel">
-      <h2>Cola</h2>
-      <div class="row">
-        <input id="queVal" placeholder="valor" />
-        <button id="queEnq">enqueue</button>
-        <button id="queDeq">dequeue</button>
-        <span class="pill" id="queueView">[]</span>
+       Queue Panel 
+      <div class="panel">
+        <h2>Cola (Queue)</h2>
+        <div class="controls">
+          <input type="text" id="queueInput" placeholder="Ingresa un valor">
+          <button onclick="queueEnqueue()">Enqueue</button>
+          <button class="secondary" onclick="queueDequeue()">Dequeue</button>
+        </div>
+        <div class="structure-view" id="queueView">
+          <span class="structure-empty">La cola está vacía</span>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Tamaño</span>
+            <span class="stat-value" id="queueSize">0</span>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section class="panel">
-      <h2>Ordenamientos</h2>
-      <div class="row">
-        <button id="btnNew">Nuevo arreglo</button>
-        <select id="algo">
-          <option value="bubble">BubbleSort</option>
-          <option value="quick">QuickSort</option>
-        </select>
-        <label>Velocidad
-          <select id="speed">
-            <option value="250">Lento</option>
-            <option value="120" selected>Medio</option>
-            <option value="40">Rápido</option>
+       Sorting Panel 
+      <div class="panel sorting-panel">
+        <h2>Algoritmos de Ordenamiento</h2>
+        <div class="controls">
+          <button onclick="generateArray()">Nuevo Arreglo</button>
+          <select id="algoSelect">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="quick">Quick Sort</option>
           </select>
-        </label>
-        <button id="btnPlay">Auto</button>
-        <button id="btnStep">Paso</button>
-        <button id="btnPause">Pausa</button>
-        <span class="pill" id="status">listo</span>
+          <select id="speedSelect">
+            <option value="500">Lento</option>
+            <option value="200">Medio</option>
+            <option value="50">Rápido</option>
+          </select>
+          <input type="number" id="sizeInput" placeholder="Tamaño" value="15" min="5" max="50" style="max-width: 100px;">
+          <button onclick="startSort()">Ordenar</button>
+          <button class="secondary" onclick="pauseSort()">Pausar</button>
+        </div>
+        <div class="bars-container" id="barsContainer"></div>
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Comparaciones</span>
+            <span class="stat-value" id="comparisons">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Intercambios</span>
+            <span class="stat-value" id="swaps">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Tamaño</span>
+            <span class="stat-value" id="arraySize">0</span>
+          </div>
+        </div>
+        <div class="complexity" id="complexity">
+          <strong>Complejidad:</strong> Selecciona un algoritmo para ver su complejidad
+        </div>
       </div>
-      <div class="bars" id="bars"></div>
-      <div class="row">
-        <span class="pill">Comparaciones: <strong id="cmp">0</strong></span>
-        <span class="pill">Intercambios: <strong id="swp">0</strong></span>
-        <span class="pill">Tamaño: <strong id="size">0</strong></span>
-      </div>
-      <p class="muted" id="complexity">O(?): </p>
-    </section>
-  </main>
+    </div>
+  </div>
 
-  <script src="js/structures.js"></script>
-  <script src="js/sorting.js"></script>
-  <script src="js/visualize.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+    // Stack implementation
+    let stack = [];
+
+    function stackPush() {
+      const input = document.getElementById('stackInput');
+      const value = input.value.trim();
+      if (!value) return;
+      
+      stack.push(value);
+      input.value = '';
+      updateStackView();
+    }
+
+    function stackPop() {
+      if (stack.length === 0) return;
+      stack.pop();
+      updateStackView();
+    }
+
+    function updateStackView() {
+      const view = document.getElementById('stackView');
+      const size = document.getElementById('stackSize');
+      
+      if (stack.length === 0) {
+        view.innerHTML = '<span class="structure-empty">La pila está vacía</span>';
+      } else {
+        view.innerHTML = stack.map(item => 
+          `<div class="structure-item">${item}</div>`
+        ).join('');
+      }
+      
+      size.textContent = stack.length;
+    }
+
+    // Queue implementation
+    let queue = [];
+
+    function queueEnqueue() {
+      const input = document.getElementById('queueInput');
+      const value = input.value.trim();
+      if (!value) return;
+      
+      queue.push(value);
+      input.value = '';
+      updateQueueView();
+    }
+
+    function queueDequeue() {
+      if (queue.length === 0) return;
+      queue.shift();
+      updateQueueView();
+    }
+
+    function updateQueueView() {
+      const view = document.getElementById('queueView');
+      const size = document.getElementById('queueSize');
+      
+      if (queue.length === 0) {
+        view.innerHTML = '<span class="structure-empty">La cola está vacía</span>';
+      } else {
+        view.innerHTML = queue.map(item => 
+          `<div class="structure-item">${item}</div>`
+        ).join('');
+      }
+      
+      size.textContent = queue.length;
+    }
+
+    // Sorting algorithms
+    let array = [];
+    let sorting = false;
+    let paused = false;
+
+    const complexities = {
+      bubble: 'Tiempo: O(n²) promedio y peor caso, O(n) mejor caso | Espacio: O(1)',
+      selection: 'Tiempo: O(n²) en todos los casos | Espacio: O(1)',
+      insertion: 'Tiempo: O(n²) promedio y peor caso, O(n) mejor caso | Espacio: O(1)',
+      quick: 'Tiempo: O(n log n) promedio, O(n²) peor caso | Espacio: O(log n)'
+    };
+
+    function generateArray() {
+      const size = parseInt(document.getElementById('sizeInput').value) || 15;
+      array = Array.from({length: size}, () => Math.floor(Math.random() * 100) + 10);
+      renderBars();
+      resetStats();
+    }
+
+    function renderBars(comparing = [], swapping = []) {
+      const container = document.getElementById('barsContainer');
+      const maxValue = Math.max(...array);
+      
+      container.innerHTML = array.map((value, index) => {
+        const height = (value / maxValue) * 100;
+        let className = 'bar';
+        if (comparing.includes(index)) className += ' comparing';
+        if (swapping.includes(index)) className += ' swapping';
+        
+        return `
+          <div class="${className}" style="height: ${height}%">
+            <span class="bar-value">${value}</span>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('arraySize').textContent = array.length;
+    }
+
+    function resetStats() {
+      document.getElementById('comparisons').textContent = '0';
+      document.getElementById('swaps').textContent = '0';
+    }
+
+    async function startSort() {
+      if (sorting) return;
+      if (array.length === 0) generateArray();
+      
+      sorting = true;
+      paused = false;
+      resetStats();
+      
+      const algo = document.getElementById('algoSelect').value;
+      const speed = parseInt(document.getElementById('speedSelect').value);
+      
+      document.getElementById('complexity').innerHTML = 
+        `<strong>Complejidad ${algo.charAt(0).toUpperCase() + algo.slice(1)} Sort:</strong> ${complexities[algo]}`;
+      
+      switch(algo) {
+        case 'bubble': await bubbleSort(speed); break;
+        case 'selection': await selectionSort(speed); break;
+        case 'insertion': await insertionSort(speed); break;
+        case 'quick': await quickSort(0, array.length - 1, speed); break;
+      }
+      
+      sorting = false;
+      renderBars();
+    }
+
+    function pauseSort() {
+      paused = !paused;
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => {
+        const check = () => {
+          if (!paused) resolve();
+          else setTimeout(check, 100);
+        };
+        setTimeout(check, ms);
+      });
+    }
+
+    async function bubbleSort(speed) {
+      let comparisons = 0, swaps = 0;
+      
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = 0; j < array.length - 1 - i; j++) {
+          comparisons++;
+          document.getElementById('comparisons').textContent = comparisons;
+          renderBars([j, j + 1], []);
+          await sleep(speed);
+          
+          if (array[j] > array[j + 1]) {
+            [array[j], array[j + 1]] = [array[j + 1], array[j]];
+            swaps++;
+            document.getElementById('swaps').textContent = swaps;
+            renderBars([], [j, j + 1]);
+            await sleep(speed);
+          }
+        }
+      }
+    }
+
+    async function selectionSort(speed) {
+      let comparisons = 0, swaps = 0;
+      
+      for (let i = 0; i < array.length - 1; i++) {
+        let minIdx = i;
+        
+        for (let j = i + 1; j < array.length; j++) {
+          comparisons++;
+          document.getElementById('comparisons').textContent = comparisons;
+          renderBars([minIdx, j], []);
+          await sleep(speed);
+          
+          if (array[j] < array[minIdx]) {
+            minIdx = j;
+          }
+        }
+        
+        if (minIdx !== i) {
+          [array[i], array[minIdx]] = [array[minIdx], array[i]];
+          swaps++;
+          document.getElementById('swaps').textContent = swaps;
+          renderBars([], [i, minIdx]);
+          await sleep(speed);
+        }
+      }
+    }
+
+    async function insertionSort(speed) {
+      let comparisons = 0, swaps = 0;
+      
+      for (let i = 1; i < array.length; i++) {
+        let key = array[i];
+        let j = i - 1;
+        
+        while (j >= 0) {
+          comparisons++;
+          document.getElementById('comparisons').textContent = comparisons;
+          renderBars([j, j + 1], []);
+          await sleep(speed);
+          
+          if (array[j] <= key) break;
+          
+          array[j + 1] = array[j];
+          swaps++;
+          document.getElementById('swaps').textContent = swaps;
+          renderBars([], [j, j + 1]);
+          await sleep(speed);
+          j--;
+        }
+        array[j + 1] = key;
+      }
+    }
+
+    async function quickSort(low, high, speed) {
+      if (low < high) {
+        const pi = await partition(low, high, speed);
+        await quickSort(low, pi - 1, speed);
+        await quickSort(pi + 1, high, speed);
+      }
+    }
+
+    async function partition(low, high, speed) {
+      const pivot = array[high];
+      let i = low - 1;
+      let comparisons = parseInt(document.getElementById('comparisons').textContent);
+      let swaps = parseInt(document.getElementById('swaps').textContent);
+      
+      for (let j = low; j < high; j++) {
+        comparisons++;
+        document.getElementById('comparisons').textContent = comparisons;
+        renderBars([j, high], []);
+        await sleep(speed);
+        
+        if (array[j] < pivot) {
+          i++;
+          [array[i], array[j]] = [array[j], array[i]];
+          swaps++;
+          document.getElementById('swaps').textContent = swaps;
+          renderBars([], [i, j]);
+          await sleep(speed);
+        }
+      }
+      
+      [array[i + 1], array[high]] = [array[high], array[i + 1]];
+      swaps++;
+      document.getElementById('swaps').textContent = swaps;
+      renderBars([], [i + 1, high]);
+      await sleep(speed);
+      
+      return i + 1;
+    }
+
+    // Initialize
+    generateArray();
+  </script>
 </body>
 </html>
