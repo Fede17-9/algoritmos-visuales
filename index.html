@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Algoritmos Visuales</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Algoritmos Visuales</h1>
+    <p class="muted">Pila, Cola y Ordenamientos con animación.</p>
+
+    <section class="panel">
+      <h2>Pila</h2>
+      <div class="row">
+        <input id="stkVal" placeholder="valor" />
+        <button id="stkPush">push</button>
+        <button id="stkPop">pop</button>
+        <span class="pill" id="stackView">[]</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Cola</h2>
+      <div class="row">
+        <input id="queVal" placeholder="valor" />
+        <button id="queEnq">enqueue</button>
+        <button id="queDeq">dequeue</button>
+        <span class="pill" id="queueView">[]</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Ordenamientos</h2>
+      <div class="row">
+        <button id="btnNew">Nuevo arreglo</button>
+        <select id="algo">
+          <option value="bubble">BubbleSort</option>
+          <option value="quick">QuickSort</option>
+        </select>
+        <label>Velocidad
+          <select id="speed">
+            <option value="250">Lento</option>
+            <option value="120" selected>Medio</option>
+            <option value="40">Rápido</option>
+          </select>
+        </label>
+        <button id="btnPlay">Auto</button>
+        <button id="btnStep">Paso</button>
+        <button id="btnPause">Pausa</button>
+        <span class="pill" id="status">listo</span>
+      </div>
+      <div class="bars" id="bars"></div>
+      <div class="row">
+        <span class="pill">Comparaciones: <strong id="cmp">0</strong></span>
+        <span class="pill">Intercambios: <strong id="swp">0</strong></span>
+        <span class="pill">Tamaño: <strong id="size">0</strong></span>
+      </div>
+      <p class="muted" id="complexity">O(?): </p>
+    </section>
+  </main>
+
+  <script src="js/structures.js"></script>
+  <script src="js/sorting.js"></script>
+  <script src="js/visualize.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
